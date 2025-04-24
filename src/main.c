@@ -6,32 +6,46 @@
 /*   By: achu <achu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 22:34:55 by achu              #+#    #+#             */
-/*   Updated: 2025/04/23 02:30:15 by achu             ###   ########.fr       */
+/*   Updated: 2025/04/24 03:29:37 by achu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	*print(void *arg)
+long	get_time_ms(void)
 {
-	char	*test;
+	struct timeval	tv;
 
-	test = (char *)arg;
-	usleep(250 * MULTI);
-	printf("%s\n", test);
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-int	main(int argc, char **argv)
+int	main(int ac, char **av)
 {
-	pthread_t	one;
-	pthread_t	two;
+	t_vars		*data;
+	int			i;
 
-	pthread_create(&one, NULL, print, "test22");
-	pthread_create(&two, NULL, print, "test");
-
-	pthread_detach(one);
-	pthread_detach(two);
-
-	usleep (1000 * MULTI);
+	if (ac < 5)
+		return (ft_perror("Error: Not enough arguments"), false);
+	else if (ac > 6)
+		return (ft_perror("Error: Too much arguments"), false);
+	i = 0;
+	data = init_data(av);
+	if (!data)
+		return (1);
+	if (data->num_philo == 1)
+	{
+		printf("0    0 died\n");
+		free_ptr((void *)data->philos);
+		free_ptr((void *)data->forks);
+		free(data);
+		return (0);
+	}
+	if (ac == 6)
+		data->num_meal = ft_atoi(av[5]);
+	init_philo(data, routine);
+	while (i < data->num_philo)
+		pthread_join(data->philos[i++].thread, NULL);
+	clean_data(data);
 	return (0);
 }
