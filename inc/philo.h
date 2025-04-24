@@ -6,7 +6,7 @@
 /*   By: achu <achu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 22:35:09 by achu              #+#    #+#             */
-/*   Updated: 2025/04/24 01:44:07 by achu             ###   ########.fr       */
+/*   Updated: 2025/04/24 14:19:27 by achu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ typedef struct s_vars
 
 // Initialize
 t_vars		*init_data(char **av);
-bool		init_arg(t_vars *data, int ac, char **av);
+bool		init_arg(int ac, char **av);
 void		init_philo(t_vars *data, void *(func)(void *));
 
 // Philo

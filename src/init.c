@@ -6,7 +6,7 @@
 /*   By: achu <achu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 14:49:54 by achu              #+#    #+#             */
-/*   Updated: 2025/04/24 03:19:19 by achu             ###   ########.fr       */
+/*   Updated: 2025/04/24 14:21:56 by achu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,27 @@ void	init_philo(t_vars *data, void *(func)(void *))
 		pthread_create(&data->philos[i].thread, NULL, func, &data->philos[i]);
 		i++;
 	}
+}
+
+bool	init_arg(int ac, char **av)
+{
+	if (ac < 5)
+		return (ft_perror("Error: Not enough arguments"), false);
+	else if (ac > 6)
+		return (ft_perror("Error: Too much arguments"), false);
+	else if (ft_atoi(av[1]) <= 0)
+		return (ft_perror("Error: Not enough philosopher"), false);
+	else if (ft_atoi(av[1]) == 1)
+		return (printf("0    0 died\n"), false);
+	else if (ft_atoi(av[2]) < 60)
+		return (ft_perror("Error: Not enough time to die"), false);
+	else if (ft_atoi(av[3]) < 60)
+		return (ft_perror("Error: Not enough time to eat"), false);
+	else if (ft_atoi(av[4]) < 60)
+		return (ft_perror("Error: Not enough time to sleep"), false);
+	else if (ac == 6 && ft_atoi(av[5]) <= 0)
+		return (ft_perror("Error: Not enough meal"), false);
+	return (true);
 }
 
 t_vars	*init_data(char **av)

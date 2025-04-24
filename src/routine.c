@@ -6,7 +6,7 @@
 /*   By: achu <achu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 02:03:27 by achu              #+#    #+#             */
-/*   Updated: 2025/04/24 03:23:36 by achu             ###   ########.fr       */
+/*   Updated: 2025/04/24 14:38:56 by achu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,17 +36,23 @@ static bool	check_thinking(t_philo *philo)
 	if (check_death(philo))
 		return (false);
 	log_status(*philo, "is thinking");
-	log_status(*philo, "has taken a fork");
-	pthread_mutex_lock(philo->left);
+	if (philo->id % 2 == 0)
+	{
+		pthread_mutex_lock(philo->left);
+		log_status(*philo, "has taken a fork");
+		pthread_mutex_lock(philo->right);
+		log_status(*philo, "has taken a fork");
+	}
+	else
+	{
+		pthread_mutex_lock(philo->right);
+		log_status(*philo, "has taken a fork");
+		pthread_mutex_lock(philo->left);
+		log_status(*philo, "has taken a fork");
+	}
 	if (check_death(philo))
 	{
 		pthread_mutex_unlock(philo->left);
-		return (false);
-	}
-	log_status(*philo, "has taken a fork");
-	pthread_mutex_lock(philo->right);
-	if (check_death(philo))
-	{
 		pthread_mutex_unlock(philo->right);
 		return (false);
 	}
