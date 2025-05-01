@@ -6,7 +6,7 @@
 /*   By: achu <achu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 14:49:54 by achu              #+#    #+#             */
-/*   Updated: 2025/05/02 00:05:09 by achu             ###   ########.fr       */
+/*   Updated: 2025/05/02 00:25:38 by achu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,6 @@ bool	init_arg(int ac, char **av)
 		return (ft_perror("Error: Too much arguments"), false);
 	else if (ft_atoi(av[1]) <= 0)
 		return (ft_perror("Error: Not enough philosopher"), false);
-	else if (ft_atoi(av[1]) == 1)
-		return (printf("1    1 died\n"), false);
 	else if (ft_atoi(av[2]) < 60)
 		return (ft_perror("Error: Not enough time to die"), false);
 	else if (ft_atoi(av[3]) < 60)

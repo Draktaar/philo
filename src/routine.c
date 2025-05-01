@@ -6,7 +6,7 @@
 /*   By: achu <achu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 02:03:27 by achu              #+#    #+#             */
-/*   Updated: 2025/05/02 00:24:03 by achu             ###   ########.fr       */
+/*   Updated: 2025/05/02 00:28:30 by achu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,15 @@ void	*routine(void *arg)
 	if (philo->id % 2 == 1)
 		usleep(1000);
 	philo->last_meal = get_time_ms();
+	if (philo->data->num_philo == 1)
+	{
+		pthread_mutex_lock(philo->left);
+		log_status(*philo, "has taken a fork");
+		while (!check_death(philo))
+			usleep(100); // Wait until dead
+		pthread_mutex_unlock(philo->left);
+		return (NULL);
+	}
 	while (!check_death(philo))
 	{
 		if (!check_thinking(philo))
