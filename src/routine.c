@@ -6,7 +6,7 @@
 /*   By: achu <achu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 02:03:27 by achu              #+#    #+#             */
-/*   Updated: 2025/04/26 00:06:50 by achu             ###   ########.fr       */
+/*   Updated: 2025/05/02 00:24:03 by achu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,42 +36,21 @@ static bool	check_thinking(t_philo *philo)
 	if (check_death(philo))
 		return (false);
 	log_status(*philo, "is thinking");
-	if (philo->id % 2 == 0)
+	pthread_mutex_lock(philo->left);
+	if (check_death(philo))
 	{
-		pthread_mutex_lock(philo->left);
-		if (check_death(philo))
-		{
-			pthread_mutex_unlock(philo->left);
-			return (false);
-		}
-		log_status(*philo, "has taken a fork");
-		pthread_mutex_lock(philo->right);
-		if (check_death(philo))
-		{
-			pthread_mutex_unlock(philo->left);
-			pthread_mutex_unlock(philo->right);
-			return (false);
-		}
-		log_status(*philo, "has taken a fork");
+		pthread_mutex_unlock(philo->left);
+		return (false);
 	}
-	else
+	log_status(*philo, "has taken a fork");
+	pthread_mutex_lock(philo->right);
+	if (check_death(philo))
 	{
-		pthread_mutex_lock(philo->right);
-		if (check_death(philo))
-		{
-			pthread_mutex_unlock(philo->right);
-			return (false);
-		}
-		log_status(*philo, "has taken a fork");
-		pthread_mutex_lock(philo->left);
-		if (check_death(philo))
-		{
-			pthread_mutex_unlock(philo->left);
-			pthread_mutex_unlock(philo->right);
-			return (false);
-		}
-		log_status(*philo, "has taken a fork");
+		pthread_mutex_unlock(philo->left);
+		pthread_mutex_unlock(philo->right);
+		return (false);
 	}
+	log_status(*philo, "has taken a fork");
 	return (true);
 }
 
@@ -79,15 +58,24 @@ static bool	check_eating(t_philo *philo)
 {
 	long	start;
 
-	if (check_death(philo))
-		return (false);
 	log_status(*philo, "is eating");
 	philo->last_meal = get_time_ms();
-	usleep(philo->data->time_eat * MULTI);
+	start = get_time_ms();
+	while (get_time_ms() - start <= philo->data->time_eat)
+	{
+		if (check_death(philo))
+		{
+			pthread_mutex_unlock(philo->left);
+			pthread_mutex_unlock(philo->right);
+			return (false);
+		}
+		usleep(100);
+	}
 	pthread_mutex_unlock(philo->left);
 	pthread_mutex_unlock(philo->right);
 	philo->meal_eaten++;
-	if (philo->data->num_meal != -1 && philo->meal_eaten >= philo->data->num_meal)
+	if (philo->data->num_meal != -1
+		&& philo->meal_eaten >= philo->data->num_meal)
 		return (false);
 	return (true);
 }
@@ -99,7 +87,13 @@ static bool	check_sleeping(t_philo *philo)
 	if (check_death(philo))
 		return (false);
 	log_status(*philo, "is sleeping");
-	usleep(philo->data->time_sleep * MULTI);
+	start = get_time_ms();
+	while (get_time_ms() - start <= philo->data->time_sleep)
+	{
+		if (check_death(philo))
+			return (false);
+		usleep(100);
+	}
 	return (true);
 }
 
