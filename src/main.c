@@ -6,7 +6,7 @@
 /*   By: achu <achu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 22:34:55 by achu              #+#    #+#             */
-/*   Updated: 2025/04/25 15:51:57 by achu             ###   ########.fr       */
+/*   Updated: 2025/05/03 00:26:03 by achu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,12 @@ int	main(int ac, char **av)
 		return (EXIT_FAILURE);
 	if (ac == 6)
 		data->num_meal = ft_atoi(av[5]);
-	init_philo(data, routine);
+	if (!init_philo(data, routine))
+		return (clean_data(data), EXIT_FAILURE);
 	i = 0;
 	while (i < data->num_philo)
 		pthread_join(data->philos[i++].thread, NULL);
-	if (ac == 6 && !data->is_dead)
+	if (ac == 6 && !data->is_over)
 		printf("Each philosopher ate %d times\n", data->num_meal);
 	clean_data(data);
 	return (EXIT_SUCCESS);

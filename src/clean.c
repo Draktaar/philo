@@ -1,22 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   status.c                                           :+:      :+:    :+:   */
+/*   clean.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: achu <achu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/23 17:39:51 by achu              #+#    #+#             */
-/*   Updated: 2025/04/24 00:51:23 by achu             ###   ########.fr       */
+/*   Created: 2025/04/23 14:47:11 by achu              #+#    #+#             */
+/*   Updated: 2025/05/03 00:32:14 by achu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	log_status(t_philo philo, const char *status)
+void	free_ptr(void *ptr)
 {
-	pthread_mutex_lock(&philo.data->log);
-	printf("%li     ", get_time_ms() - philo.data->time_start);
-	printf("%i ", philo.id);
-	printf("%s\n", status);
-	pthread_mutex_unlock(&philo.data->log);
+	if (!ptr)
+		return ;
+	free(ptr);
+}
+
+void	clean_data(t_vars *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->num_philo)
+	{
+		pthread_mutex_destroy(&data->forks[i]);
+		i++;
+	}
+	pthread_mutex_destroy(&data->log);
+	pthread_mutex_destroy(&data->endsim);
+	free_ptr((void *)data->philos);
+	free_ptr((void *)data->forks);
+	free(data);
 }

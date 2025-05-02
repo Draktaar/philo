@@ -6,7 +6,7 @@
 /*   By: achu <achu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 14:49:54 by achu              #+#    #+#             */
-/*   Updated: 2025/05/02 00:25:38 by achu             ###   ########.fr       */
+/*   Updated: 2025/05/03 00:31:46 by achu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	setup_philo(t_vars *data)
 	}
 }
 
-void	init_philo(t_vars *data, void *(func)(void *))
+bool	init_philo(t_vars *data, void *(func)(void *))
 {
 	int	i;
 
@@ -33,7 +33,7 @@ void	init_philo(t_vars *data, void *(func)(void *))
 	while (i < data->num_philo)
 		pthread_mutex_init(&data->forks[i++], NULL);
 	pthread_mutex_init(&data->log, NULL);
-	pthread_mutex_init(&data->m_over, NULL);
+	pthread_mutex_init(&data->endsim, NULL);
 	i = 0;
 	while (i < data->num_philo)
 	{
@@ -43,9 +43,11 @@ void	init_philo(t_vars *data, void *(func)(void *))
 		data->philos[i].data = data;
 		data->philos[i].left = &data->forks[i];
 		data->philos[i].right = &data->forks[(i + 1) % data->num_philo];
-		pthread_create(&data->philos[i].thread, NULL, func, &data->philos[i]);
+		if (pthread_create(&data->philos[i].thread, NULL, func, &data->philos[i]) != 0)
+			return (false);
 		i++;
 	}
+	return (true);
 }
 
 bool	init_arg(int ac, char **av)
@@ -79,7 +81,7 @@ t_vars	*init_data(char **av)
 	data->time_eat = ft_atoi(av[3]);
 	data->time_sleep = ft_atoi(av[4]);
 	data->num_meal = -1;
-	data->is_dead = false;
+	data->is_over = false;
 	data->time_start = get_time_ms();
 	data->philos = malloc(data->num_philo * sizeof(t_philo));
 	data->forks = malloc(data->num_philo * sizeof(pthread_mutex_t));
