@@ -6,7 +6,7 @@
 /*   By: achu <achu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 14:49:54 by achu              #+#    #+#             */
-/*   Updated: 2025/05/03 00:31:46 by achu             ###   ########.fr       */
+/*   Updated: 2025/05/03 04:26:00 by achu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ bool	init_philo(t_vars *data, void *(func)(void *))
 	while (i < data->num_philo)
 		pthread_mutex_init(&data->forks[i++], NULL);
 	pthread_mutex_init(&data->log, NULL);
-	pthread_mutex_init(&data->endsim, NULL);
 	i = 0;
 	while (i < data->num_philo)
 	{

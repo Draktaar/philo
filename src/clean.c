@@ -6,7 +6,7 @@
 /*   By: achu <achu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 14:47:11 by achu              #+#    #+#             */
-/*   Updated: 2025/05/03 00:32:14 by achu             ###   ########.fr       */
+/*   Updated: 2025/05/03 04:26:03 by achu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ void	clean_data(t_vars *data)
 		i++;
 	}
 	pthread_mutex_destroy(&data->log);
-	pthread_mutex_destroy(&data->endsim);
 	free_ptr((void *)data->philos);
 	free_ptr((void *)data->forks);
 	free(data);

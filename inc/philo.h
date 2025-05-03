@@ -6,14 +6,12 @@
 /*   By: achu <achu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 22:35:09 by achu              #+#    #+#             */
-/*   Updated: 2025/05/03 00:31:46 by achu             ###   ########.fr       */
+/*   Updated: 2025/05/03 04:25:47 by achu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
-
-# define MULTI		1000
 
 # include <stdio.h>
 # include <unistd.h>
@@ -46,7 +44,6 @@ typedef struct s_vars
 	pthread_mutex_t		log;
 
 	long				time_start;
-	pthread_mutex_t		endsim;
 	bool				is_over;
 }	t_vars;
 

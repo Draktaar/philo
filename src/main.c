@@ -6,7 +6,7 @@
 /*   By: achu <achu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 22:34:55 by achu              #+#    #+#             */
-/*   Updated: 2025/05/03 00:26:03 by achu             ###   ########.fr       */
+/*   Updated: 2025/05/03 04:18:14 by achu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ int	main(int ac, char **av)
 	i = 0;
 	while (i < data->num_philo)
 		pthread_join(data->philos[i++].thread, NULL);
+	clean_data(data);
 	if (ac == 6 && !data->is_over)
 		printf("Each philosopher ate %d times\n", data->num_meal);
-	clean_data(data);
 	return (EXIT_SUCCESS);
 }
