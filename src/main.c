@@ -6,13 +6,13 @@
 /*   By: achu <achu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 22:34:55 by achu              #+#    #+#             */
-/*   Updated: 2025/05/03 04:18:14 by achu             ###   ########.fr       */
+/*   Updated: 2025/05/03 05:04:13 by achu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-long	get_time_ms(void)
+long long int	get_time_ms(void)
 {
 	struct timeval	tv;
 

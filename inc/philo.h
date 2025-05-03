@@ -6,7 +6,7 @@
 /*   By: achu <achu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 22:35:09 by achu              #+#    #+#             */
-/*   Updated: 2025/05/03 04:25:47 by achu             ###   ########.fr       */
+/*   Updated: 2025/05/03 05:04:28 by achu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ typedef struct s_philo
 	pthread_mutex_t		*left;
 	pthread_mutex_t		*right;
 	int					meal_eaten;
-	long				last_meal;
+	long long int		last_meal;
 	struct s_vars		*data;
 }	t_philo;
 
@@ -43,27 +43,27 @@ typedef struct s_vars
 	pthread_mutex_t		*forks;
 	pthread_mutex_t		log;
 
-	long				time_start;
+	long long int		time_start;
 	bool				is_over;
 }	t_vars;
 
 // Initialize
-t_vars		*init_data(char **av);
-bool		init_arg(int ac, char **av);
-bool		init_philo(t_vars *data, void *(func)(void *));
+t_vars			*init_data(char **av);
+bool			init_arg(int ac, char **av);
+bool			init_philo(t_vars *data, void *(func)(void *));
 
 // Philo
-void		*routine(void *arg);
-void		log_status(t_philo *philo, const char *status);
-bool		check_death(t_philo *philo);
+void			*routine(void *arg);
+void			log_status(t_philo *philo, const char *status);
+bool			check_death(t_philo *philo);
 
 // Clean-up
-void		clean_data(t_vars *data);
-void		free_ptr(void *ptr);
+void			clean_data(t_vars *data);
+void			free_ptr(void *ptr);
 
 // Helper
-int			ft_atoi(const char *str);
-long		get_time_ms(void);
-void		ft_perror(const char *s);
+int				ft_atoi(const char *str);
+long long int	get_time_ms(void);
+void			ft_perror(const char *s);
 
 #endif

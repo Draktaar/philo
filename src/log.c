@@ -6,7 +6,7 @@
 /*   By: achu <achu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 17:39:51 by achu              #+#    #+#             */
-/*   Updated: 2025/05/03 04:25:40 by achu             ###   ########.fr       */
+/*   Updated: 2025/05/03 05:05:59 by achu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,8 @@ void	log_status(t_philo *philo, const char *status)
 		pthread_mutex_unlock(&philo->data->log);
 		return ;
 	}
-	printf("%li     ", get_time_ms() - philo->data->time_start);
-	printf("%i ", philo->id);
-	printf("%s\n", status);
+	printf("%lli ", get_time_ms() - philo->data->time_start);
+	printf("%i %s\n", philo->id, status);
 	pthread_mutex_unlock(&philo->data->log);
 }
 
@@ -39,7 +38,7 @@ bool	check_death(t_philo *philo)
 	{
 		philo->data->is_over = true;
 		is_dead = true;
-		printf("%li     ", get_time_ms() - philo->data->time_start);
+		printf("%lli ", get_time_ms() - philo->data->time_start);
 		printf("%i died\n", philo->id);
 	}
 	pthread_mutex_unlock(&philo->data->log);

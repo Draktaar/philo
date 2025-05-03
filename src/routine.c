@@ -6,7 +6,7 @@
 /*   By: achu <achu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 02:03:27 by achu              #+#    #+#             */
-/*   Updated: 2025/05/03 04:29:08 by achu             ###   ########.fr       */
+/*   Updated: 2025/05/03 04:59:52 by achu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static bool	check_thinking(t_philo *philo)
 
 static bool	check_eating(t_philo *philo)
 {
-	long	start;
+	long long int	start;
 
 	if (check_death(philo))
 		return (false);
@@ -82,7 +82,7 @@ static bool	check_eating(t_philo *philo)
 
 static bool	check_sleeping(t_philo *philo)
 {
-	long	start;
+	long long int	start;
 
 	if (check_death(philo))
 		return (false);
@@ -105,8 +105,8 @@ void	*routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	if (philo->id % 2 == 0)
-		usleep(1000);
+	if (philo->id % 2 == 1)
+		usleep(2500);
 	philo->last_meal = get_time_ms();
 	if (philo->data->num_philo == 1)
 	{
@@ -117,7 +117,7 @@ void	*routine(void *arg)
 		pthread_mutex_unlock(philo->left);
 		return (NULL);
 	}
-	while (1)
+	while (!check_death(philo))
 	{
 		if (!check_thinking(philo))
 			break ;
