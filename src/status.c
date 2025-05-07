@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   log.c                                              :+:      :+:    :+:   */
+/*   status.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: achu <achu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 17:39:51 by achu              #+#    #+#             */
-/*   Updated: 2025/05/03 05:05:59 by achu             ###   ########.fr       */
+/*   Updated: 2025/05/07 11:14:03 by achu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,33 +14,26 @@
 
 void	log_status(t_philo *philo, const char *status)
 {
-	bool	is_over;
+	long long int	time;
 
-	pthread_mutex_lock(&philo->data->log);
-	is_over = philo->data->is_over;
-	if (is_over || get_time_ms() - philo->last_meal > philo->data->time_die)
-	{
-		pthread_mutex_unlock(&philo->data->log);
+	if (philo->data->is_dead)
 		return ;
-	}
-	printf("%lli ", get_time_ms() - philo->data->time_start);
-	printf("%i %s\n", philo->id, status);
-	pthread_mutex_unlock(&philo->data->log);
+	time = get_time_ms() - philo->data->time_start;
+	printf("%lli %i %s\n", time, philo->id, status);
 }
 
 bool	check_death(t_philo *philo)
 {
 	bool	is_dead;
 
-	pthread_mutex_lock(&philo->data->log);
-	is_dead = philo->data->is_over;
-	if (!is_dead && get_time_ms() - philo->last_meal > philo->data->time_die)
+	pthread_mutex_lock(&philo->data->m_over);
+	is_dead = philo->data->is_dead;
+	if (!is_dead && get_time_ms() - philo->last_meal >= philo->data->time_die)
 	{
-		philo->data->is_over = true;
+		log_status(philo, "died");
+		philo->data->is_dead = true;
 		is_dead = true;
-		printf("%lli ", get_time_ms() - philo->data->time_start);
-		printf("%i died\n", philo->id);
 	}
-	pthread_mutex_unlock(&philo->data->log);
+	pthread_mutex_unlock(&philo->data->m_over);
 	return (is_dead);
 }

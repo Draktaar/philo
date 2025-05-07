@@ -6,7 +6,7 @@
 /*   By: achu <achu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 02:07:37 by achu              #+#    #+#             */
-/*   Updated: 2025/04/24 02:08:36 by achu             ###   ########.fr       */
+/*   Updated: 2025/05/07 12:09:14 by achu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,44 @@ int	ft_atoi(const char *str)
 	}
 	nb *= sign;
 	return (nb);
+}
+
+bool	is_digit(int ac, char **av)
+{
+	int	i;
+	int	j;
+
+	i = 1;
+	while (i < ac)
+	{
+		j = 0;
+		if (av[i][j] == '-' || av[i][j] == '+')
+			j++;
+		while (av[i][j])
+		{
+			if (av[i][j] < '0' || '9' < av[i][j])
+				return (false);
+			j++;
+		}
+		i++;
+	}
+	return (true);
+}
+
+long	get_time_ms(void)
+{
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+}
+
+long	time_remaining(t_philo *philo)
+{
+	int	die;
+
+	die = philo->data->time_die;
+	return (die - (get_time_ms() - philo->last_meal));
 }
 
 void	ft_perror(const char *s)

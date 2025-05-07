@@ -6,19 +6,11 @@
 /*   By: achu <achu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 22:34:55 by achu              #+#    #+#             */
-/*   Updated: 2025/05/03 05:04:13 by achu             ###   ########.fr       */
+/*   Updated: 2025/05/07 11:53:37 by achu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-long long int	get_time_ms(void)
-{
-	struct timeval	tv;
-
-	gettimeofday(&tv, NULL);
-	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
-}
 
 int	main(int ac, char **av)
 {
@@ -32,13 +24,12 @@ int	main(int ac, char **av)
 		return (EXIT_FAILURE);
 	if (ac == 6)
 		data->num_meal = ft_atoi(av[5]);
-	if (!init_philo(data, routine))
-		return (clean_data(data), EXIT_FAILURE);
+	init_philo(data, routine);
 	i = 0;
 	while (i < data->num_philo)
 		pthread_join(data->philos[i++].thread, NULL);
-	clean_data(data);
-	if (ac == 6 && !data->is_over)
+	if (ac == 6 && !data->is_dead)
 		printf("Each philosopher ate %d times\n", data->num_meal);
+	clean_data(data);
 	return (EXIT_SUCCESS);
 }

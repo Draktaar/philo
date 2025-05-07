@@ -6,12 +6,14 @@
 /*   By: achu <achu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 22:35:09 by achu              #+#    #+#             */
-/*   Updated: 2025/05/03 05:04:28 by achu             ###   ########.fr       */
+/*   Updated: 2025/05/07 11:58:34 by achu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
+
+# define MULTI		1000
 
 # include <stdio.h>
 # include <unistd.h>
@@ -27,7 +29,7 @@ typedef struct s_philo
 	pthread_mutex_t		*left;
 	pthread_mutex_t		*right;
 	int					meal_eaten;
-	long long int		last_meal;
+	long				last_meal;
 	struct s_vars		*data;
 }	t_philo;
 
@@ -38,32 +40,35 @@ typedef struct s_vars
 	int					time_eat;
 	int					time_sleep;
 	int					num_meal;
+	bool				is_dead;
 
 	t_philo				*philos;
 	pthread_mutex_t		*forks;
 	pthread_mutex_t		log;
 
-	long long int		time_start;
-	bool				is_over;
+	long				time_start;
+	pthread_mutex_t		m_over;
 }	t_vars;
 
 // Initialize
-t_vars			*init_data(char **av);
-bool			init_arg(int ac, char **av);
-bool			init_philo(t_vars *data, void *(func)(void *));
+t_vars		*init_data(char **av);
+bool		init_arg(int ac, char **av);
+bool		init_philo(t_vars *data, void *(func)(void *));
 
 // Philo
-void			*routine(void *arg);
-void			log_status(t_philo *philo, const char *status);
-bool			check_death(t_philo *philo);
+void		*routine(void *arg);
+bool		check_death(t_philo *philo);
 
 // Clean-up
-void			clean_data(t_vars *data);
-void			free_ptr(void *ptr);
+void		clean_data(t_vars *data);
+void		free_ptr(void *ptr);
 
 // Helper
-int				ft_atoi(const char *str);
-long long int	get_time_ms(void);
-void			ft_perror(const char *s);
+int			ft_atoi(const char *str);
+bool		is_digit(int ac, char **av);
+void		log_status(t_philo *philo, const char *status);
+long		get_time_ms(void);
+long		time_remaining(t_philo *philo);
+void		ft_perror(const char *s);
 
 #endif

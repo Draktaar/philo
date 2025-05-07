@@ -1,102 +1,104 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   routine.c                                          :+:      :+:    :+:   */
+/*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: achu <achu@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 02:03:27 by achu              #+#    #+#             */
-/*   Updated: 2025/05/03 04:59:52 by achu             ###   ########.fr       */
+/*   Updated: 2025/05/07 11:56:14 by achu             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static bool	pick_fork(t_philo *philo, pthread_mutex_t *first, pthread_mutex_t *second)
+static bool	fork_picking(t_philo *philo,
+	pthread_mutex_t *left, pthread_mutex_t *right)
 {
-	pthread_mutex_lock(first);
+	pthread_mutex_lock(left);
+	pthread_mutex_lock(right);
+	pthread_mutex_lock(&philo->data->log);
 	if (check_death(philo))
 	{
-		pthread_mutex_unlock(first);
+		pthread_mutex_unlock(left);
+		pthread_mutex_unlock(right);
+		pthread_mutex_unlock(&philo->data->log);
 		return (false);
 	}
 	log_status(philo, "has taken a fork");
-	pthread_mutex_lock(second);
-	if (check_death(philo))
-	{
-		pthread_mutex_unlock(first);
-		pthread_mutex_unlock(second);
-		return (false);
-	}
 	log_status(philo, "has taken a fork");
+	log_status(philo, "is eating");
+	pthread_mutex_unlock(&philo->data->log);
 	return (true);
 }
 
 static bool	check_thinking(t_philo *philo)
 {
-	pthread_mutex_t	*first;
-	pthread_mutex_t	*second;
+	pthread_mutex_t	*left;
+	pthread_mutex_t	*right;
 
+	pthread_mutex_lock(&philo->data->log);
+	if (check_death(philo))
+	{
+		pthread_mutex_unlock(&philo->data->log);
+		return (false);
+	}
+	log_status(philo, "is thinking");
+	pthread_mutex_unlock(&philo->data->log);
 	if (philo->id % 2 == 0)
 	{
-		first = philo->left;
-		second = philo->right;
+		left = philo->left;
+		right = philo->right;
 	}
 	else
 	{
-		first = philo->right;
-		second = philo->left;
+		usleep(time_remaining(philo) / 3 * 1000);
+		left = philo->right;
+		right = philo->left;
 	}
-	if (!pick_fork(philo, first, second))
+	if (!fork_picking(philo, left, right))
 		return (false);
 	return (true);
 }
 
 static bool	check_eating(t_philo *philo)
 {
-	long long int	start;
+	long	start;
 
-	if (check_death(philo))
-		return (false);
-	log_status(philo, "is eating");
 	philo->last_meal = get_time_ms();
-	start = get_time_ms();
-	while (get_time_ms() - start <= philo->data->time_eat)
-	{
-		if (check_death(philo))
-		{
-			pthread_mutex_unlock(philo->left);
-			pthread_mutex_unlock(philo->right);
-			return (false);
-		}
-		usleep(100);
-	}
+	usleep(philo->data->time_eat * MULTI);
 	pthread_mutex_unlock(philo->left);
 	pthread_mutex_unlock(philo->right);
 	philo->meal_eaten++;
 	if (philo->data->num_meal != -1
 		&& philo->meal_eaten >= philo->data->num_meal)
+	{
+		pthread_mutex_lock(&philo->data->log);
+		if (check_death(philo))
+		{
+			pthread_mutex_unlock(&philo->data->log);
+			return (false);
+		}
+		log_status(philo, "is thinking");
+		pthread_mutex_unlock(&philo->data->log);
 		return (false);
+	}
 	return (true);
 }
 
 static bool	check_sleeping(t_philo *philo)
 {
-	long long int	start;
+	long	start;
 
+	pthread_mutex_lock(&philo->data->log);
 	if (check_death(philo))
-		return (false);
-	log_status(philo, "is sleeping");
-	start = get_time_ms();
-	while (get_time_ms() - start <= philo->data->time_sleep)
 	{
-		if (check_death(philo))
-			return (false);
-		usleep(100);
-	}
-	if (check_death(philo))
+		pthread_mutex_unlock(&philo->data->log);
 		return (false);
-	log_status(philo, "is thinking");
+	}
+	log_status(philo, "is sleeping");
+	pthread_mutex_unlock(&philo->data->log);
+	usleep(philo->data->time_sleep * MULTI);
 	return (true);
 }
 
@@ -105,26 +107,26 @@ void	*routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	if (philo->id % 2 == 1)
-		usleep(2500);
 	philo->last_meal = get_time_ms();
 	if (philo->data->num_philo == 1)
 	{
-		pthread_mutex_lock(philo->left);
+		pthread_mutex_lock(&philo->data->log);
 		log_status(philo, "has taken a fork");
+		pthread_mutex_unlock(&philo->data->log);
+		pthread_mutex_lock(philo->left);
 		while (!check_death(philo))
 			usleep(100);
 		pthread_mutex_unlock(philo->left);
 		return (NULL);
 	}
-	while (!check_death(philo))
+	while (1)
 	{
 		if (!check_thinking(philo))
-			break ;
+			return (NULL);
 		if (!check_eating(philo))
-			break ;
+			return (NULL);
 		if (!check_sleeping(philo))
-			break ;
+			return (NULL);
 	}
 	return (NULL);
 }
